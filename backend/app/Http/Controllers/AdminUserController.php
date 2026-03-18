@@ -4,50 +4,41 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ArtistProfile;
 use \App\Models\Event;
+use App\Http\Requests\UpdateUserRequest;
 
 class AdminUserController extends Controller
 {
     public function index(Request $request)
     {
-        if(!Auth::user()->hasRole('admin')){
-            if($request->is('api/*') || $request->expectsJson()){
-                return response()->json(['error' => true, 'message' => 'Solo los administradores pueden acceder a esta sección.', 'code' => 403], 403);
-            }
-            abort(403, 'Solo los administradores pueden acceder a esta sección.');
+        if(!Auth::user()->hasRole('admin')){       
+            return response()->json(['error' => true, 'message' => 'Solo los administradores pueden acceder a esta sección.', 'code' => 403], 403);         
         }
 
         //Cambiar más adelante a paginate para no cargar todos los usuarios de golpe.
         $users = User::with(['roles', 'artistProfile'])->get();
 
-        if($request->is('api/*') || $request->expectsJson()){
-            return response()->json(['error' => false, 'message' => 'Lista de usuarios recuperada', 'data' => $users, 'code' => 200], 200);
-        }
+        
+        return response()->json(['error' => false, 'message' => 'Lista de usuarios recuperada', 'data' => $users, 'code' => 200], 200);
+        
 
-        return Inertia::render('Admin/Users', ['users' => $users]);
+        
     }
 
     public function show(Request $request, $id){
         $user = User::with(['roles', 'artistProfile'])->findOrFail($id);
         $roleName = $user->getRoleNames()->first() ?? 'spectator';
-        if($request->is('api/*') || $request->expectsJson()){
-            return response()->json(['error' => false, 'message' => 'Usuario recuperado', 'data' => $user, 'role' => $roleName, 'code' => 200], 200);
-        }
-        return Inertia::render('Admin/UserDetail', ['user' => $user, 'role' => $roleName]);
+       
+        return response()->json(['error' => false, 'message' => 'Usuario recuperado', 'data' => $user, 'role' => $roleName, 'code' => 200], 200);
+        
+        
     }
 
-    public function update(Request $request, $id){
+    public function update(UpdateUserRequest $request, $id){
          $user = User::findOrFail($id);
-
-       $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,'.$user->id,
-            'role' => 'sometimes|string|in:admin,artist,spectator' // Validamos que el rol exista
-        ]);
 
         DB::transaction(function () use ($user, $request) {
             // Actualizamos los datos básicos
@@ -71,7 +62,7 @@ class AdminUserController extends Controller
         $user->load(['roles', 'artistProfile']); // Recargamos las relaciones para que el frontend tenga la info actualizada.
         $roleName = $user->getRoleNames()->first() ?? 'spectator';
 
-        if($request->is('api/*') || $request->expectsJson()){
+        
             return response()->json([
                 'error' => false, 
                 'message' => 'Usuario actualizado correctamente', 
@@ -81,9 +72,9 @@ class AdminUserController extends Controller
                 ],
                 'code' => 200
             ], 200);
-        }
+        
 
-        return back();
+        
     }
 
     public function destroy(Request $request, $id){
@@ -105,10 +96,10 @@ class AdminUserController extends Controller
             $user->delete();
         });
 
-        if($request->is('api/*') || $request->expectsJson()){
-            return response()->json(['error' => false, 'message' => 'Usuario eliminado por el administrador', 'code' => 200], 200);
-        }
+        
+        return response()->json(['error' => false, 'message' => 'Usuario eliminado por el administrador', 'code' => 200], 200);
+        
 
-        return back();
+        
     }
 }
