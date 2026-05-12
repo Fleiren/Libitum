@@ -30,6 +30,7 @@ const Login = () => {
         event.preventDefault();
         
         const error = validateLogin(credentials);
+
         if(error){
             showMessage(error, "error");
             return;
@@ -77,8 +78,6 @@ const Login = () => {
                     />
                 </div>
 
-                {/* Ya no hace falta renderizar el error aquí, 
-                    tu componente global de Mensajes se encargará de mostrarlo flotando o donde lo tengas diseñado */}
 
                 <button type="submit" disabled={loading}>
                     {loading ? "Cargando..." : "Entrar"}

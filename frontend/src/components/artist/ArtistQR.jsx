@@ -1,41 +1,44 @@
-import {useRef} from "react";
-import {QRCodeCanvas} from "qrcode.react";
-import useAuthContext from "../..hooks/useAuthContext.js";
+import { useRef } from 'react';
+// ¡OJO AQUÍ! Cambiamos QRCodeSVG por QRCodeCanvas
+import { QRCodeCanvas } from 'qrcode.react'; 
+import useAuthContext from '../../hooks/useAuthContext.js';
 
 const ArtistQR = () => {
-    const {user} = useAuthContext();
-    const qrRef = useRef(null);
+    const { user } = useAuthContext();
+    // Creamos una referencia para "apuntar" al cuadradito del QR y poder descargarlo
+    const qrRef = useRef(null); 
 
-    const profileURL = user?.id ? `${window.location.origin}/artist/${user.id}` : "";
-
+    // Función mágica para descargar el QR como PNG
     const downloadQR = () => {
-        const canvas = qrRef.current.querySelector("canvas");
-        if(canvas) {
-            //Le cambiamos la etiqueta para decirle "esto no es una imagen para ver, es un archivo binario para descargar".
-            const pngURL = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        const canvas = qrRef.current.querySelector('canvas');
+        if (canvas) {
+            const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
             const downloadLink = document.createElement("a");
-            downloadLink.href = pngURL;
-            //Definimos el nombre que tendrá el archivo y que es un enlace de descarga.
-            downloadLink.download = `QR_Libitum_${user.name}.png`;
+            downloadLink.href = pngUrl;
+            //Definimos que el enlace será para descargar y le damos nombre.
+            downloadLink.download = `QR_Libitum_${user.name}.png`; 
 
-            //Realizamos un clic falso, es decir, automático ya que el botón de por si no sabe descargar cosas por lo que al darle al botón de descargar,
-            //ese botón parecerá que está descargando el archivo pero en realidad lo descarga este enlace que aparece y se clica de forma automática.
+            //Como el botón no sabe descargar cosas creamos un enlace que se clica de forma automática cuando se pulsa el botón para que parezca que lo ha realizado el botón.
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
         }
-    }
-    return(
+    };
+
+    // Preparamos la URL (si aún no hay user, se queda vacía)
+    const profileUrl = user?.id ? `${window.location.origin}/artist/${user.id}` : "";
+
+    return (
         <div className="qr-wrapper">
             
-            {/* (cargando sesión) */}
+            
             {!user && (
                 <div className="qr-loading">
                     <p>Cargando información...</p>
                 </div>
             )}
 
-            {/* 2. pero NO es artista*/}
+           
             {user && user.role !== 'artist' && (
                 <div className="qr-error-state">
                     <h3>Acceso denegado</h3>
@@ -51,7 +54,7 @@ const ArtistQR = () => {
                         Descarga este código e imprímelo para que tu público pueda hacerte donaciones fácilmente.
                     </p>
                     
-                    
+                    {/* Metemos el ref aquí para que el botón sepa a qué sacarle la foto */}
                     <div className="qr-canvas-container" ref={qrRef}>
                         <QRCodeCanvas 
                             value={profileUrl} 
@@ -59,11 +62,11 @@ const ArtistQR = () => {
                             bgColor={"#ffffff"}
                             fgColor={"#000000"}
                             level={"H"} 
-                            includeMargin={true} //Le deja un margen blanco para que las impresoras no lo corten.
+                            includeMargin={true} // Mano de santo: le deja un margen blanco para que las impresoras no lo corten
                         />
                     </div>
 
-                   
+                    {/* ¡EL BOTÓN DE DESCARGA! */}
                     <button 
                         type="button" 
                         onClick={downloadQR} 
@@ -72,8 +75,8 @@ const ArtistQR = () => {
                         Descargar como PNG
                     </button>
 
-                    {/**Se abre una ventana nueva segura sin referencia ni posiblidad de volver a la página de donde viene por seguridad para que nadie pueda rastrear nada. */}
                     <p className="qr-link">
+                        {/**Lo que hay en rel sirve para evitar que alguien pueda construir el camino de vuelta al origen de esta página y así no poder entrar en la cuenta del artista, se abrirá en una página nueva sin referencia a la de origen. */}
                         <a href={profileUrl} target="_blank" rel="noopener noreferrer">
                             Ver cómo queda mi perfil público
                         </a>
@@ -82,7 +85,6 @@ const ArtistQR = () => {
             )}
 
         </div>
-   
     );
 };
 
