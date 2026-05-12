@@ -2,6 +2,7 @@ import {useState} from "react";
 import {useNavigate, Link} from "react-router-dom";
 import useAuthContext from "./../../hooks/useAuthContext.js";
 import useMessageContext from "../../hooks/useMessageContext.js";
+import { validateLogin } from "../../utils/validations/auth.js";
 
 const Login = () => {
 
@@ -28,9 +29,9 @@ const Login = () => {
     const submit = async (event) => {
         event.preventDefault();
         
-        //validar en validador, esto es provisional.
-        if(!credentials.email || !credentials.password){
-            showMessage("Por favor, rellena todos los campos.", "error");
+        const error = validateLogin(credentials);
+        if(error){
+            showMessage(error, "error");
             return;
         }
        

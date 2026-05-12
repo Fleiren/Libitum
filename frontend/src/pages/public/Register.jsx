@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import useMessageContext from "../../hooks/useMessageContext.js";
 import useAuthContext from "../../hooks/useAuthContext.js";
+import { validateRegister } from "../../utils/validations/auth.js";
 
 const Register = () => {
 
@@ -31,24 +32,14 @@ const Register = () => {
     const submit = async (event) => {
         event.preventDefault();
 
-        //validar en validador, esto es provisional.
-        if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-            showMessage("Por favor, rellena todos los campos.", "error");
-            return;
-        }
-        if (formData.password !== formData.confirmPassword) {
-            showMessage("Las contraseñas no coinciden.", "error");
-            return;
-        }
-
-        if (formData.password.length < 6) {
-            showMessage("La contraseña debe tener al menos 6 caracteres.", "error");
+        const error = validateRegister(formData);
+        if(error){
+            showMessage(error, "error");
             return;
         }
 
         try{
             setLoading(true);
-
             await register({
                 name: formData.name,
                 email: formData.email,
