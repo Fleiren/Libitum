@@ -34,12 +34,11 @@ const Login = () => {
         const error = validateLogin(credentials);
 
         if(error){
-            showMessage(error, "error");
-        //validar en validador, esto es provisional.
-        if(!credentials.email || !credentials.password){
-            showMessageWithTime("Por favor, rellena todos los campos.", "error");
+            //Como ya está todo validado en el método validateLogin he usado tu método con tiempo para cualquier error del formulario.
+            showMessageWithTime(error, "error");
             return;
         }
+        
 
         try{
             setLoading(true);
@@ -52,7 +51,8 @@ const Login = () => {
             setLoading(false);
         }
 
-    };
+    
+    }
     return (
         <div className="login-container">
             <h2>Iniciar Sesión en Libitum</h2>

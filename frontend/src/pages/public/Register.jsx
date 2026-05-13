@@ -18,7 +18,7 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
 
     const {register} = useAuthContext();
-    const {showMessage} = useMessageContext();
+    const {showMessageWithTime} = useMessageContext();
 
     const updateData = (event) => {
         const {name, value} = event.target;
@@ -34,7 +34,7 @@ const Register = () => {
 
         const error = validateRegister(formData);
         if(error){
-            showMessage(error, "error");
+            showMessageWithTime(error, "error");
             return;
         }
 
@@ -47,9 +47,9 @@ const Register = () => {
                 role: formData.role
             });
 
-            showMessage("¡Cuenta creada con éxito! Inicia sesión.", "ok");
+            showMessageWithTime("¡Cuenta creada con éxito! Inicia sesión.", "ok");
         }catch(error){
-            showMessage("Error al registrarse.", "error");
+            showMessageWithTime("Error al registrarse.", "error");
         }finally{
             setLoading(false);
         }

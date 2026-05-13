@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
 import useAPI from "../../hooks/useAPI.js";
-import useMessageContext from "../../hooks/useMessageContext,js";
+import useMessageContext from "../../hooks/useMessageContext.js";
 
 const ArtistProfile = () => {
     const {id} = useParams();
     const [artist, setArtist] = useState(null);
     const {error, loading, getData} = useAPI();
-    const {showMessahe} = useMessageContext();
+    const {showMessage} = useMessageContext();
     useEffect(() => {
         const fetchArtistProfile = async() => {
             try {
