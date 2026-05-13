@@ -15,7 +15,9 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     const {logIn} = useAuthContext();
-    const {showMessage} = useMessageContext();
+    const {
+        showMessageWithTime,
+    } = useMessageContext();
     const nav = useNavigate();
     
     const updateData = (event) => {
@@ -33,14 +35,16 @@ const Login = () => {
 
         if(error){
             showMessage(error, "error");
+        //validar en validador, esto es provisional.
+        if(!credentials.email || !credentials.password){
+            showMessageWithTime("Por favor, rellena todos los campos.", "error");
             return;
         }
-       
 
         try{
             setLoading(true);
             await logIn(credentials);
-            showMessage("¡Bienvenido/a de nuevo!", "ok");
+            showMessageWithTime("¡Bienvenido/a de nuevo!", "ok");
             //Navegar al para ti del usuario.
         }catch(error){
             showMessage("Credenciales incorrectas o problema de conexión.", "error");

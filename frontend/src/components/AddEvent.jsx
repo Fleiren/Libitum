@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import useEventContext from '../hooks/useEventContext.js';
-import { FloatingInput, FloatingTextarea, FloatingSelect } from './FloatingInput.jsx';
+import { FloatingInput, FloatingTextarea, FloatingSelect, FloatingMultiSelect } from './FloatingInput.jsx';
 import LocationInput from './LocationInput.jsx';
+import FloatingOptionsSelect from './FloatingOptionsSelect.jsx';
 import styles from './AddEvent.module.scss';
 
 const AddEvent = () => {
-    const { changeStatusNewEvent, setLocation, saveEvent } = useEventContext();
+    const { 
+        changeStatusNewEvent,
+        setLocation,
+        saveEvent,
+        categories,
+        statuses,
+        changeDecisionAddEvent,
+    } = useEventContext();
+
     const [preview, setPreview] = useState(null);
 
     const handleImage = (e) => {
@@ -19,13 +28,14 @@ const AddEvent = () => {
             <div className={styles.bottomCard}>
                 {/* ── TOP CARD: imagen + título ── */}
                 <div className={styles.topCard}>
-                    <label className={styles.imageUpload}>
+                    <label htmlFor="cover_image" className={styles.imageUpload}>
                         {preview
                             ? <img src={preview} className={styles.imagePreview} alt="Portada del evento" />
                             : <p>Haz click para añadir<br />la portada del evento</p>
                         }
                         <input
                             type="file"
+                            id="cover_image"
                             name="cover_image"
                             accept="image/*"
                             onChange={handleImage}
@@ -76,7 +86,13 @@ const AddEvent = () => {
                             onChange={changeStatusNewEvent}
                         />
                     </div>
-
+                    <FloatingMultiSelect
+                        id="categories"
+                        name="categories"
+                        label="Categorías"
+                        options={categories}
+                        onChange={changeStatusNewEvent}
+                    />
                 </div>
 
                 <div className={styles.footer}>
@@ -85,17 +101,22 @@ const AddEvent = () => {
                         name="status_id"
                         label="Estado"
                         onChange={changeStatusNewEvent}
-                    >
-                        <option value="1">Borrador</option>
-                        <option value="2">Publicado</option>
+                    >   
+                        { 
+                            statuses && statuses.length > 0 && <FloatingOptionsSelect data={statuses}/>
+                        }
                     </FloatingSelect>
-
-                    <button type="submit" className={styles.submitBtn} onClick={saveEvent}>
-                        Guardar
-                    </button>
                 </div>
-
             </div>
+            <div className={styles.acceptCancel}>
+                <button className={styles.cancelBtn} onClick={changeDecisionAddEvent}>
+                    Cancelar
+                </button>
+                <button type="submit" className={styles.submitBtn} onClick={saveEvent}>
+                    Guardar
+                </button>
+            </div>
+            
         </div>
     );
 };

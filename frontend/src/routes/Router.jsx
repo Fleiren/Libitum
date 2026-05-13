@@ -5,7 +5,8 @@ import Contact from '../pages/public/Contact.jsx';
 import Login from '../pages/public/Login.jsx';
 import Register from '../pages/public/Register.jsx';
 import PublicRoute from './guards/PublicRoute.jsx';
-import PageEvents from '../pages/PageEvents.jsx';
+import PrivateRoute from './guards/ProtectedRoute.jsx'
+import PageEvents from '../pages/private/PageEvents.jsx';
 
 const Router = () => {
     return (
