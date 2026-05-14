@@ -46,7 +46,7 @@ const Login = () => {
             showMessageWithTime("¡Bienvenido/a de nuevo!", "ok");
             //Navegar al para ti del usuario.
         }catch(error){
-            showMessage("Credenciales incorrectas o problema de conexión.", "error");
+            showMessageWithTime("Credenciales incorrectas o problema de conexión.", "error");
         }finally{
             setLoading(false);
         }

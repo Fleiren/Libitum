@@ -9,6 +9,8 @@ import PrivateRoute from './guards/ProtectedRoute.jsx'
 import PageEvents from '../pages/private/PageEvents.jsx';
 import ArtistProfile from "../pages/public/ArtistProfile.jsx";
 import ArtistQR from "../components/artist/ArtistQR.jsx";
+import AdminRoute from './guards/AdminRoute.jsx';
+import AdminDashboard from "../pages/private/admin/AdminDashboard.jsx";
 
 const Router = () => {
     return (
@@ -29,6 +31,10 @@ const Router = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/events" element={<PageEvents />} />
                 <Route path="/my-qr" element={<ArtistQR />} />
+            </Route>
+
+            <Route element={<AdminRoute/>}>
+                <Route path="/admin" element={<AdminDashboard />}/>
             </Route>
         </Routes>
     );
