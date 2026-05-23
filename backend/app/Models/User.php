@@ -100,4 +100,8 @@ class User extends Authenticatable
         //  Relación 1:N: Un usuario crea muchos eventos.
         return $this->hasMany(Event::class, 'user_id');
     }
+
+    public function likes() {
+        return $this->belongsToMany(Event::class, 'likes')->withTimestamps();
+    }
 }

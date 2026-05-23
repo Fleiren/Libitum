@@ -42,8 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update']);
     Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy']);
 
-
-
+    //Ruta para el feed.
+    Route::get('/feed', [\App\Http\Controllers\Api\FeedController::class, 'index']);
+    //Dar like
+    Route::post('/events/{event}/like', [\App\Http\Controllers\Api\LikeController::class, 'toggle']);
     // Rutas de seguidores para la API
     Route::get('/my-favorites', [FollowerController::class, 'index']);
     Route::post('/artist/{id}/follow', [FollowerController::class, 'store']);
@@ -73,6 +75,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/users/{id}', [AdminUserController::class, 'show']);
         Route::patch('/admin/users/{id}', [AdminUserController::class, 'update']);
         Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy']);
+        Route::get('/admin/events', [EventController::class, 'allEventsForAdmin']); 
+        Route::delete('/admin/events/{id}', [EventController::class, 'destroyByAdmin']);
     }); // -----------------    TERMINA EL MIDDLEWARE `admin`   --------------------------
 
 

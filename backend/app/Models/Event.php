@@ -49,4 +49,8 @@ class Event extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function likedBy() {
+        return $this->belongsToMany(User::class, 'likes');
+    }
 }

@@ -24,23 +24,33 @@ class EventController extends Controller
     {
         // 1. Obtenemos el usuario (que tiene la sesión abierta).
         $user = Auth::user();
+        //Obtenemos la id para recoger los me gusta de sus eventos
+        $userId = $user->id;
 
-        // Buscamos los eventos creados por el artista y los ordenamos por los más nuevos.
+        // Buscamos los eventos creados por el artista y los ordenamos por los más nuevos mostrando los likes que tiene.
         $events = $user->createdEvents()
-            ->latest()
-            ->get();
+        ->with(['categories', 'status']) 
+        ->withExists(['likedBy as liked' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }])
+        ->latest()
+        ->get();
 
         return ReturnHelper::return([
-            'events' => $events->load(['categories', 'status']),
+            'events' => $events,
             'component' => 'Events/Index'
         ]);
     }
     public function show(Event $event)
     {
+        $userId = Auth::id();
         //2. Buscamos el evento por ID y cargamos las categorías y el estado de este.
         //  toDo: Recoger los $event->attendees() para que pueda verse quien va a asistir.
         //  Hay que hacer una lógica de que si eres el creador puedes verlos y si no lo eres pues solo puedes ver el el evento en si.
         $event->load('categories', 'status');
+
+        // Añadimos el estado del like manualmente al modelo cargado
+        $event->liked = $event->likedBy()->where('user_id', $userId)->exists();
 
         return ReturnHelper::return([
             'event' => $event,
@@ -192,8 +202,12 @@ class EventController extends Controller
     public function signedUp(Request $request)
     {
         $user = Auth::user();
+        $userId = $user->id;
         //  1.  Hacemos la petición a la base de datos.
-        $events = $user->events()->get();
+        $events = $user->events()->with(['categories', 'status']) // Cargamos relaciones necesarias
+            ->withExists(['likedBy as liked' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }])->get();
 
         return ReturnHelper::return([
            'events' => $events
@@ -224,6 +238,34 @@ class EventController extends Controller
 
         return ReturnHelper::ok('Te has dado de baja del evento correctamente.');
 
+    }
+
+    public function allEventsForAdmin()
+    {
+        $userId = Auth::id();
+        // Usamos with('user') para que nos traiga también los datos del creador.
+        $events = Event::with(['artist', 'categories', 'status'])->withExists(['likedBy as liked' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }])->latest()->get();
+
+        // Lo devolvemos de la misma forma que AdminUserController
+        // para que tu response.data de React lo lea perfectamente.
+        return ReturnHelper::return([
+            'data' => $events
+        ]);
+    }
+
+    /**
+     * Elimina cualquier evento de la base de datos.
+     */
+    public function destroyByAdmin(Event $event)
+    {
+        // Aquí NO comprobamos si el Auth::user()->id es igual al del creador del evento.
+        // Como esta ruta está protegida por el middleware 'admin' en api.php, 
+        // si el código llega hasta aquí, sabemos 100% que es un administrador.
+        $event->delete();
+
+        return ReturnHelper::ok("El evento '$event->title' ha sido eliminado por moderación.");
     }
 
 }

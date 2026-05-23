@@ -116,6 +116,26 @@ const EventProvider = ({ children }) => {
 
     const changeDecisionAddEvent = () => setDecisionAddEvent(v => !v);
 
+    /**
+     * Alterna el like de un evento, con llamarlo desde un onClick ya se cambia el valor del like. */
+    const toggleLike = async (eventId) => {
+        try {
+            
+            const response = await save(`${URL_EVENTS}/${eventId}/like`, {});
+            
+            //cambiar su estado de like sin mutar el array original.
+            setEvents(prevEvents => prevEvents.map(event => 
+                event.id === eventId 
+                    ? { ...event, liked: response.liked } 
+                    : event
+            ));
+
+        } catch (error) {
+            showMessageWithTime("No se pudo procesar el like.", "error");
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         // GetEvents no se puede hacer aquí porque previamente si no se a logeado salta el error de que !no está Autorizado!
         getCategories();
@@ -135,6 +155,7 @@ const EventProvider = ({ children }) => {
         getCategories,
         getStatuses,
         changeDecisionAddEvent,
+        toggleLike,
     }
 
     return (
