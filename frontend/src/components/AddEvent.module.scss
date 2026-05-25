@@ -1,0 +1,153 @@
+$primary: #2b6870;
+$primary-dark: #1e4f56;
+$danger-color: var(--color-rojo-danger);
+$danger-color-dark: var(--color-rojo-danger-dark);
+$border-radius: clamp(0.75rem, 2vw, 1rem);
+$shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+
+.page {
+    max-width: 780px;
+    margin: clamp(1rem, 4vw, 2rem) auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1rem);
+    padding: 0 clamp(0.75rem, 3vw, 1rem);
+}
+
+/* ── TOP CARD ── */
+.topCard {
+    border-radius: $border-radius;
+    border: 2px solid $primary;
+    overflow: hidden;
+    box-shadow: $shadow;
+}
+
+.imageUpload {
+    width: 100%;
+    min-height: clamp(140px, 30vw, 200px);
+    background-color: rgba(43, 104, 112, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.375rem, 1vw, 0.5rem);
+    cursor: pointer;
+    border-bottom: 1px dashed $primary;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: rgba(43, 104, 112, 0.2);
+    }
+
+    p {
+        color: var(--color-secundario-claro);
+        font-size: clamp(0.8rem, 1.5vw, 0.9375rem);
+        text-align: center;
+    }
+
+    input[type='file'] {
+        display: none;
+    }
+}
+
+.imagePreview {
+    width: 100%;
+    max-height: clamp(180px, 35vw, 280px);
+    object-fit: cover;
+    display: block;
+}
+
+/* ── BOTTOM CARD ── */
+.bottomCard {
+    border-radius: $border-radius;
+    border: 2px solid $primary;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    box-shadow: $shadow;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1rem);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 clamp(0.75rem, 3vw, 1.5rem);
+
+    @media (max-width: 580px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.locationCol {
+    grid-row: span 3;
+    display: flex;
+    flex-direction: column;
+}
+
+.rightCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
+    display: flex;
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+    align-items: flex-end;
+
+    & > *:first-child {
+        flex: 1;
+    }
+}
+
+.submitBtn {
+    padding: clamp(0.625rem, 1.5vw, 0.75rem) clamp(1rem, 2.5vw, 1.75rem);
+    background-color: $primary;
+    color: var(--color-letra-claro);
+    border: none;
+    border-radius: clamp(0.375rem, 1vw, 0.5rem);
+    font-size: clamp(0.8rem, 1.5vw, 0.9375rem);
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+    align-self: flex-end;
+    min-height: 2.75rem;
+
+    &:hover {
+        background-color: $primary-dark;
+    }
+}
+
+.cancelBtn{
+    padding: clamp(0.625rem, 1.5vw, 0.75rem) clamp(1rem, 2.5vw, 1.75rem);
+    background-color: $danger-color;
+    color: var(--color-letra-claro);
+    border: none;
+    border-radius: clamp(0.375rem, 1vw, 0.5rem);
+    font-size: clamp(0.8rem, 1.5vw, 0.9375rem);
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+    align-self: flex-end;
+    min-height: 2.75rem;
+
+    &:hover {
+        background-color: $danger-color-dark;
+    }
+}
+
+
+.acceptCancel {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+
+    .submitBtn {
+        flex: 2;
+    }
+
+    .cancelBtn {
+        flex: 3;
+    }
+}

@@ -1,0 +1,106 @@
+.card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 500px; /* Tamaño perfecto para móvil/tablet y elegante en PC */
+    margin: 0 auto;
+}
+
+.cover {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.titleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.titleWrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.likeBtn {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    transition: background var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+
+    &:hover { background: rgba(43, 217, 186, 0.2); }
+}
+
+.description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    
+    span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+.map {
+    width: 100%;
+    height: 200px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-top: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.backBtn {
+    align-self: flex-start;
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+
+    &:hover { background: rgba(255, 255, 255, 0.1); }
+}
+
+/* Reutilizamos el badge del MiniEvent */
+.badge { @extend .badge; } // Si esto da error en Vite, copia las propiedades de .badge aquí

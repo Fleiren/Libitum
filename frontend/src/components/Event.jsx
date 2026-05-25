@@ -1,0 +1,91 @@
+import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
+import styles from './Event.module.scss';
+import appStyles from '../App.module.scss';
+import { formatDate } from '../utils/validations';
+//Importamos el contexto para gestionar los likes.
+import useEventContext from '../hooks/useEventContext.js';
+
+const LIBRARIES = ['places'];
+const MAP_OPTIONS = { disableDefaultUI: true, zoomControl: true };
+//TUVE QUE AÑADIR EL ONLIKE
+const Event = ({ data, onBack, onLike }) => {
+    //EXTRAIGO EL LIKE
+    const { id, title, description, location, event_date, price, cover_image, max_capacity, status, latitude, longitude, liked } = data;
+    const statusName = status?.name ?? '';
+    const coords = latitude && longitude ? { lat: Number(latitude), lng: Number(longitude) } : null;
+
+   
+    //PARA LIKES
+    //Extraemos la función para gestionar los likes.
+    const { toggleLike } = useEventContext();
+
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
+        libraries: LIBRARIES,
+        language: 'es',
+    });
+
+    //PARA LIKES
+    const handleLikeClick = (e) => {
+        if (onLike) {
+            onLike(id);
+        } else {
+            toggleLike(id);
+        }
+    };
+
+    //SE HA MODIFICADO PARA EL TEMA DE LOS LIKES PERO OBVIO AL ESTAR HACIENDO TU LOS EVENTOS HAZ LO QUE QUIERAS, LO QUE NO SE DEBE TOCAR ES LA LÓGICA EN EL CONTEXTO Y BACKEND.
+    return (
+        <div id={id} className={`${styles.card} ${appStyles.cristal}`}>
+
+            {cover_image && (
+                <img src={cover_image} alt={title} className={styles.cover} />
+            )}
+
+            <div className={styles.body}>
+                <div className={styles.titleRow}>
+                    <div className={styles.titleWrapper}>
+                        <h2 className={styles.title}>{title}</h2>
+                        {/* 3. Botón de Like junto al título */}
+                        <button 
+                            className={styles.likeBtn}
+                            onClick={handleLikeClick}
+                            title={liked ? "Quitar me gusta" : "Me gusta"}
+                        >
+                            {liked ? "❤️" : "🤍"}
+                        </button>
+                    </div>
+                    <span className={`${styles.badge} ${styles[statusName]}`}>{statusName}</span>
+                </div>
+
+                {description && <p className={styles.description}>{description}</p>}
+
+                <div className={styles.meta}>
+                    {location   && <span>📍 {location}</span>}
+                    {event_date && <span>🗓 {formatDate(event_date)}</span>}
+                    {price > 0  && <span>💶 {Number(price).toFixed(2)} €</span>}
+                    {max_capacity > 0 && <span>👥 {max_capacity} personas</span>}
+                </div>
+
+                {coords && isLoaded && (
+                    <GoogleMap
+                        mapContainerClassName={styles.map}
+                        center={coords}
+                        zoom={15}
+                        options={MAP_OPTIONS}
+                    >
+                        <Marker position={coords} />
+                    </GoogleMap>
+                )}
+            </div>
+
+            {onBack && (
+                <button className={styles.backBtn} onClick={onBack}>
+                    ← Volver
+                </button>
+            )}
+        </div>
+    );
+};
+
+export default Event;
